@@ -1,0 +1,23 @@
+# Flutter/Dart/Pub related
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+
+# IntelliJ related
+*.iml
+.idea/
+
+# VSCode related
+.vscode/
+
+# MacOS specific
+.DS_Store
+
+# Coverage
+coverage/
+
+
