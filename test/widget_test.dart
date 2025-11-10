@@ -3,7 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:plannerapp/main.dart';
 
 void main() {
-  testWidgets('App renders home screen and adds an item', (WidgetTester tester) async {
+  testWidgets('App renders home screen and adds an item',
+      (WidgetTester tester) async {
     await tester.pumpWidget(const PlannerApp());
 
     expect(find.text('PlannerApp'), findsOneWidget);
@@ -16,5 +17,3 @@ void main() {
     expect(find.text('Task 1'), findsOneWidget);
   });
 }
-
-

@@ -88,16 +88,23 @@ class _HomeScreenState extends State<_HomeScreen> {
         actions: <Widget>[
           IconButton(
             tooltip: 'Toggle theme',
-            icon: Icon(Theme.of(context).brightness == Brightness.dark ? Icons.light_mode : Icons.dark_mode),
+            icon: Icon(Theme.of(context).brightness == Brightness.dark
+                ? Icons.light_mode
+                : Icons.dark_mode),
             onPressed: () {
               final Brightness current = Theme.of(context).brightness;
-              final Brightness next = current == Brightness.dark ? Brightness.light : Brightness.dark;
+              final Brightness next = current == Brightness.dark
+                  ? Brightness.light
+                  : Brightness.dark;
               // This is just a visual demo for the GitHub repo; in a real app you'd lift theme state up.
-              final ThemeMode mode = next == Brightness.dark ? ThemeMode.dark : ThemeMode.light;
+              final ThemeMode mode =
+                  next == Brightness.dark ? ThemeMode.dark : ThemeMode.light;
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute<Widget>(
                   builder: (_) => Theme(
-                    data: mode == ThemeMode.dark ? _PlannerTheme.dark() : _PlannerTheme.light(),
+                    data: mode == ThemeMode.dark
+                        ? _PlannerTheme.dark()
+                        : _PlannerTheme.light(),
                     child: const _HomeScreen(),
                   ),
                 ),
@@ -144,16 +151,20 @@ class _HomeScreenState extends State<_HomeScreen> {
                             ),
                             alignment: Alignment.centerRight,
                             padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Icon(Icons.delete, color: colors.onErrorContainer),
+                            child: Icon(Icons.delete,
+                                color: colors.onErrorContainer),
                           ),
                           direction: DismissDirection.endToStart,
-                          onDismissed: (_) => setState(() => _items.removeAt(index)),
+                          onDismissed: (_) =>
+                              setState(() => _items.removeAt(index)),
                           child: Card(
                             elevation: 0,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
                             child: ListTile(
                               title: Text(item),
-                              leading: const Icon(Icons.check_box_outline_blank),
+                              leading:
+                                  const Icon(Icons.check_box_outline_blank),
                               trailing: const Icon(Icons.chevron_right),
                             ),
                           ),
@@ -213,9 +224,8 @@ class _PlannerTheme {
         useMaterial3: true,
       );
   static ThemeData dark() => ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4895EF), brightness: Brightness.dark),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color(0xFF4895EF), brightness: Brightness.dark),
         useMaterial3: true,
       );
 }
-
-
