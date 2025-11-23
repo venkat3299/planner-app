@@ -1,6 +1,6 @@
-## PlannerApp
+## Trip Planner
 
-A modern planning app built with Flutter.
+A simple trip planning app built with Flutter. Create trips and add itinerary items. Data is stored locally using SharedPreferences.
 
 
 
@@ -47,11 +47,35 @@ flutter analyze               # static analysis
 flutter test --coverage       # run tests with coverage
 ```
 
+### API keys and configuration
+
+This app can use free-tier APIs. Provide keys via `--dart-define` at run time:
+
+```bash
+flutter run \
+  --dart-define=OPENTRIPMAP_API_KEY=your_key \
+  --dart-define=NAVITIA_API_KEY=your_key \
+  --dart-define=AMADEUS_CLIENT_ID=your_id \
+  --dart-define=AMADEUS_CLIENT_SECRET=your_secret
+```
+
+CI: Add these as GitHub Actions secrets and pass with `flutter run`/`flutter test` steps if needed.
+
+### Services (free tiers)
+
+- Open-Meteo (no key): simple daily forecast
+- OpenTripMap (key): nearby POIs
+- Navitia (key, best EU): departures for bus/train
+- Amadeus sandbox (keys): flight offers search
+
 ### Project structure
 
 ```
 lib/
-  main.dart         # app entry, theming, and simple home screen
+  main.dart         # app entry, theming, Trips list and Trip Details
+  data/
+    trip.dart       # Trip + ItineraryItem models with JSON helpers
+    trip_store.dart # SharedPreferences storage for trips
 test/
   widget_test.dart  # basic smoke test
 ```

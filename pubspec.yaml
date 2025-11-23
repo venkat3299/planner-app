@@ -13,6 +13,10 @@ dependencies:
     sdk: flutter
   # Material icons
   cupertino_icons: ^1.0.8
+  shared_preferences: ^2.2.3
+  http: ^1.2.2
+  flutter_local_notifications: ^17.2.1+2
+  timezone: ^0.9.4
 
 dev_dependencies:
   flutter_test:
