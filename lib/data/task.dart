@@ -38,8 +38,8 @@ class Task {
 
   static List<Task> decodeList(String source) {
     final List<dynamic> list = jsonDecode(source) as List<dynamic>;
-    return list.map((dynamic e) => Task.fromJson(e as Map<String, dynamic>)).toList();
+    return list
+        .map((dynamic e) => Task.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 }
-
-

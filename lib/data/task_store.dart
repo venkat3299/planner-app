@@ -19,5 +19,3 @@ class TaskStore {
     await _prefs.setString(_key, Task.encodeList(tasks));
   }
 }
-
-

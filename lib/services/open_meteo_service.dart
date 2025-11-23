@@ -16,5 +16,3 @@ class OpenMeteoService {
     return null;
   }
 }
-
-

@@ -16,5 +16,3 @@ class TripStore {
     await _prefs.setString(_key, Trip.encodeList(trips));
   }
 }
-
-

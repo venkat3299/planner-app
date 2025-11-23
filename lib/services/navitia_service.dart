@@ -6,7 +6,8 @@ class NavitiaService {
   final String apiKey; // Get from navitia.io
 
   Future<Map<String, dynamic>?> getDepartures(String stopAreaId) async {
-    final Uri url = Uri.parse('https://api.navitia.io/v1/coverage/fr-idf/stop_areas/$stopAreaId/departures');
+    final Uri url = Uri.parse(
+        'https://api.navitia.io/v1/coverage/fr-idf/stop_areas/$stopAreaId/departures');
     final http.Response res = await http.get(
       url,
       headers: <String, String>{
@@ -19,5 +20,3 @@ class NavitiaService {
     return null;
   }
 }
-
-

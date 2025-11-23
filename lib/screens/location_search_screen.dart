@@ -36,8 +36,9 @@ class _LocationSearchScreenState extends State<LocationSearchScreen> {
       _isSearching = true;
     });
 
-    final List<LocationResult> results = await GeocodingService.instance.searchLocation(query);
-    
+    final List<LocationResult> results =
+        await GeocodingService.instance.searchLocation(query);
+
     setState(() {
       _results = results;
       _isSearching = false;
@@ -56,10 +57,11 @@ class _LocationSearchScreenState extends State<LocationSearchScreen> {
     setState(() {
       _loadingPlaces = true;
     });
-    
+
     // Get API key from environment or use empty string
-    final String? apiKey = const String.fromEnvironment('OPENTRIPMAP_API_KEY', defaultValue: '');
-    if (apiKey != null && apiKey.isNotEmpty) {
+    const String apiKey =
+        String.fromEnvironment('OPENTRIPMAP_API_KEY', defaultValue: '');
+    if (apiKey.isNotEmpty) {
       final OpenTripMapService service = OpenTripMapService(apiKey: apiKey);
       final List<Map<String, dynamic>> places = await service.searchPlaces(
         lat: lat,
@@ -138,7 +140,12 @@ class _LocationSearchScreenState extends State<LocationSearchScreen> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Icon(Icons.location_on, size: 64, color: Theme.of(context).colorScheme.primary.withOpacity(0.5)),
+                              Icon(Icons.location_on,
+                                  size: 64,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withValues(alpha: 0.5)),
                               const SizedBox(height: 16),
                               Text(
                                 'Search for a location',
@@ -147,8 +154,14 @@ class _LocationSearchScreenState extends State<LocationSearchScreen> {
                               const SizedBox(height: 8),
                               Text(
                                 'Enter a place name to search',
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface
+                                          .withValues(alpha: 0.6),
                                     ),
                               ),
                             ],
@@ -158,11 +171,14 @@ class _LocationSearchScreenState extends State<LocationSearchScreen> {
                           itemCount: _results.length,
                           itemBuilder: (BuildContext context, int index) {
                             final LocationResult location = _results[index];
-                            final bool isSelected = _selectedLocation?.name == location.name;
+                            final bool isSelected =
+                                _selectedLocation?.name == location.name;
                             return ListTile(
                               leading: Icon(
                                 Icons.location_on,
-                                color: isSelected ? Theme.of(context).colorScheme.primary : null,
+                                color: isSelected
+                                    ? Theme.of(context).colorScheme.primary
+                                    : null,
                               ),
                               title: Text(location.shortName),
                               subtitle: Text(
@@ -184,7 +200,12 @@ class _LocationSearchScreenState extends State<LocationSearchScreen> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Icon(Icons.map, size: 64, color: Theme.of(context).colorScheme.primary.withOpacity(0.5)),
+                              Icon(Icons.map,
+                                  size: 64,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withValues(alpha: 0.5)),
                               const SizedBox(height: 16),
                               Text(
                                 'Select a location',
@@ -193,8 +214,14 @@ class _LocationSearchScreenState extends State<LocationSearchScreen> {
                               const SizedBox(height: 8),
                               Text(
                                 'Choose from search results to see nearby places',
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface
+                                          .withValues(alpha: 0.6),
                                     ),
                                 textAlign: TextAlign.center,
                               ),
@@ -211,48 +238,72 @@ class _LocationSearchScreenState extends State<LocationSearchScreen> {
                                 children: <Widget>[
                                   Text(
                                     _selectedLocation!.shortName,
-                                    style: Theme.of(context).textTheme.titleLarge,
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge,
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
                                     'Lat: ${_selectedLocation!.latitude.toStringAsFixed(4)}, Lon: ${_selectedLocation!.longitude.toStringAsFixed(4)}',
-                                    style: Theme.of(context).textTheme.bodySmall,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
                                   ),
                                   const SizedBox(height: 16),
                                   Text(
                                     'Nearby Places',
-                                    style: Theme.of(context).textTheme.titleMedium,
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
                                   ),
                                 ],
                               ),
                             ),
                             Expanded(
                               child: _loadingPlaces
-                                  ? const Center(child: CircularProgressIndicator())
+                                  ? const Center(
+                                      child: CircularProgressIndicator())
                                   : _nearbyPlaces.isEmpty
                                       ? Center(
                                           child: Text(
                                             'No nearby places found\n(API key needed for OpenTripMap)',
                                             textAlign: TextAlign.center,
-                                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium
+                                                ?.copyWith(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onSurface
+                                                      .withOpacity(0.6),
                                                 ),
                                           ),
                                         )
                                       : ListView.builder(
-                                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 16),
                                           itemCount: _nearbyPlaces.length,
-                                          itemBuilder: (BuildContext context, int index) {
-                                            final Map<String, dynamic> place = _nearbyPlaces[index];
-                                            final Map<String, dynamic>? properties = place['properties'] as Map<String, dynamic>?;
-                                            final String name = properties?['name'] as String? ?? 'Unknown';
-                                            final String? kinds = properties?['kinds'] as String?;
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            final Map<String, dynamic> place =
+                                                _nearbyPlaces[index];
+                                            final Map<String, dynamic>?
+                                                properties = place['properties']
+                                                    as Map<String, dynamic>?;
+                                            final String name =
+                                                properties?['name']
+                                                        as String? ??
+                                                    'Unknown';
+                                            final String? kinds =
+                                                properties?['kinds'] as String?;
                                             return Card(
-                                              margin: const EdgeInsets.only(bottom: 8),
+                                              margin: const EdgeInsets.only(
+                                                  bottom: 8),
                                               child: ListTile(
-                                                leading: const Icon(Icons.place),
+                                                leading:
+                                                    const Icon(Icons.place),
                                                 title: Text(name),
-                                                subtitle: kinds != null ? Text(kinds.split(',').first) : null,
+                                                subtitle: kinds != null
+                                                    ? Text(
+                                                        kinds.split(',').first)
+                                                    : null,
                                               ),
                                             );
                                           },
@@ -269,4 +320,3 @@ class _LocationSearchScreenState extends State<LocationSearchScreen> {
     );
   }
 }
-

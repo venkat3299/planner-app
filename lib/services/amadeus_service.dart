@@ -10,13 +10,18 @@ class AmadeusService {
   DateTime? _expiresAt;
 
   Future<void> _ensureToken() async {
-    if (_accessToken != null && _expiresAt != null && _expiresAt!.isAfter(DateTime.now().add(const Duration(minutes: 1)))) {
+    if (_accessToken != null &&
+        _expiresAt != null &&
+        _expiresAt!.isAfter(DateTime.now().add(const Duration(minutes: 1)))) {
       return;
     }
-    final Uri url = Uri.parse('https://test.api.amadeus.com/v1/security/oauth2/token');
+    final Uri url =
+        Uri.parse('https://test.api.amadeus.com/v1/security/oauth2/token');
     final http.Response res = await http.post(
       url,
-      headers: <String, String>{'Content-Type': 'application/x-www-form-urlencoded'},
+      headers: <String, String>{
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
       body: <String, String>{
         'grant_type': 'client_credentials',
         'client_id': clientId,
@@ -24,7 +29,8 @@ class AmadeusService {
       },
     );
     if (res.statusCode == 200) {
-      final Map<String, dynamic> body = jsonDecode(res.body) as Map<String, dynamic>;
+      final Map<String, dynamic> body =
+          jsonDecode(res.body) as Map<String, dynamic>;
       _accessToken = body['access_token'] as String?;
       final int expiresIn = (body['expires_in'] as num?)?.toInt() ?? 0;
       _expiresAt = DateTime.now().add(Duration(seconds: expiresIn));
@@ -55,5 +61,3 @@ class AmadeusService {
     return null;
   }
 }
-
-

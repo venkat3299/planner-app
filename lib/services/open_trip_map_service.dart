@@ -16,12 +16,12 @@ class OpenTripMapService {
     );
     final http.Response res = await http.get(url);
     if (res.statusCode == 200) {
-      final Map<String, dynamic> body = jsonDecode(res.body) as Map<String, dynamic>;
-      final List<dynamic> features = body['features'] as List<dynamic>? ?? <dynamic>[];
+      final Map<String, dynamic> body =
+          jsonDecode(res.body) as Map<String, dynamic>;
+      final List<dynamic> features =
+          body['features'] as List<dynamic>? ?? <dynamic>[];
       return features.cast<Map<String, dynamic>>();
     }
     return <Map<String, dynamic>>[];
   }
 }
-
-

@@ -6,16 +6,20 @@ class NotificationsService {
   NotificationsService._();
   static final NotificationsService instance = NotificationsService._();
 
-  final FlutterLocalNotificationsPlugin _plugin = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _plugin =
+      FlutterLocalNotificationsPlugin();
   bool _initialized = false;
 
   Future<void> init() async {
     if (_initialized) return;
     tz.initializeTimeZones();
-    
+
     // Request permissions (Android 13+)
-    final bool? granted = await _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
-    
+    await _plugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
+
     // Create notification channel for Android
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
       'trip_planner',
@@ -23,15 +27,21 @@ class NotificationsService {
       description: 'Notifications for trip reminders and alerts',
       importance: Importance.high,
     );
-    await _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
-    
-    const AndroidInitializationSettings androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const DarwinInitializationSettings iosSettings = DarwinInitializationSettings(
+    await _plugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
+
+    const AndroidInitializationSettings androidSettings =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const DarwinInitializationSettings iosSettings =
+        DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
     );
-    const InitializationSettings initSettings = InitializationSettings(android: androidSettings, iOS: iosSettings);
+    const InitializationSettings initSettings =
+        InitializationSettings(android: androidSettings, iOS: iosSettings);
     await _plugin.initialize(initSettings);
     _initialized = true;
   }
@@ -66,7 +76,8 @@ class NotificationsService {
   }) async {
     await init();
     try {
-      final tz.TZDateTime when = tz.TZDateTime.now(tz.local).add(Duration(seconds: seconds));
+      final tz.TZDateTime when =
+          tz.TZDateTime.now(tz.local).add(Duration(seconds: seconds));
       await _plugin.zonedSchedule(
         DateTime.now().millisecondsSinceEpoch ~/ 1000,
         title,
@@ -83,7 +94,8 @@ class NotificationsService {
           iOS: DarwinNotificationDetails(),
         ),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
         payload: 'trip_planner',
       );
     } catch (e) {
@@ -119,7 +131,8 @@ class NotificationsService {
           iOS: DarwinNotificationDetails(),
         ),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
         payload: 'trip_planner',
       );
     } catch (e) {
@@ -128,5 +141,3 @@ class NotificationsService {
     }
   }
 }
-
-

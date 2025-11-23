@@ -60,8 +60,7 @@ class Trip {
       id: json['id'] as String,
       name: json['name'] as String,
       itinerary: (json['itinerary'] as List<dynamic>? ?? <dynamic>[])
-          .map((dynamic e) =>
-              ItineraryItem.fromJson(e as Map<String, dynamic>))
+          .map((dynamic e) => ItineraryItem.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
   }
@@ -71,8 +70,8 @@ class Trip {
 
   static List<Trip> decodeList(String source) {
     final List<dynamic> list = jsonDecode(source) as List<dynamic>;
-    return list.map((dynamic e) => Trip.fromJson(e as Map<String, dynamic>)).toList();
+    return list
+        .map((dynamic e) => Trip.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 }
-
-

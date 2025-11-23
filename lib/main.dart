@@ -83,7 +83,6 @@ class _HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<_HomeScreen> {
   final TextEditingController _tripNameController = TextEditingController();
   List<Trip> _trips = <Trip>[];
-  SharedPreferences? _prefs;
   TripStore? _store;
 
   @override
@@ -97,7 +96,6 @@ class _HomeScreenState extends State<_HomeScreen> {
     final TripStore store = TripStore(p);
     final List<Trip> saved = store.load();
     setState(() {
-      _prefs = p;
       _store = store;
       _trips = saved;
     });
@@ -277,8 +275,9 @@ class _HomeScreenState extends State<_HomeScreen> {
         trip: trip,
         onSave: (Trip updated) async {
           setState(() {
-            _trips =
-                _trips.map((Trip t) => t.id == updated.id ? updated : t).toList();
+            _trips = _trips
+                .map((Trip t) => t.id == updated.id ? updated : t)
+                .toList();
           });
           await _persist();
         },
@@ -416,20 +415,25 @@ class _TripDetailsState extends State<_TripDetails> {
                                 borderRadius: BorderRadius.circular(12)),
                             child: ListTile(
                               title: Text(item.title),
-                              subtitle: item.address != null ? Text(item.address!) : null,
+                              subtitle: item.address != null
+                                  ? Text(item.address!)
+                                  : null,
                               leading: Icon(
                                 item.latitude != null && item.longitude != null
                                     ? Icons.location_on
                                     : Icons.place,
-                                color: item.latitude != null && item.longitude != null
+                                color: item.latitude != null &&
+                                        item.longitude != null
                                     ? colors.primary
                                     : null,
                               ),
-                              trailing: item.latitude != null && item.longitude != null
+                              trailing: item.latitude != null &&
+                                      item.longitude != null
                                   ? IconButton(
                                       icon: const Icon(Icons.map),
                                       tooltip: 'View on map',
-                                      onPressed: () => _showLocationOnMap(context, item),
+                                      onPressed: () =>
+                                          _showLocationOnMap(context, item),
                                     )
                                   : null,
                             ),
@@ -445,7 +449,8 @@ class _TripDetailsState extends State<_TripDetails> {
   }
 
   Future<void> _searchLocation() async {
-    final LocationResult? result = await Navigator.of(context).push<LocationResult>(
+    final LocationResult? result =
+        await Navigator.of(context).push<LocationResult>(
       MaterialPageRoute<LocationResult>(
         builder: (_) => const LocationSearchScreen(),
       ),
@@ -498,16 +503,18 @@ class _TripDetailsState extends State<_TripDetails> {
     );
   }
 
-  Future<void> _showLocationOnMap(BuildContext context, ItineraryItem item) async {
+  Future<void> _showLocationOnMap(
+      BuildContext context, ItineraryItem item) async {
     if (item.latitude == null || item.longitude == null) return;
-    
+
     // Show weather and location info
     final OpenMeteoService weatherService = OpenMeteoService();
     final Map<String, dynamic>? weather = await weatherService.getDailyForecast(
       lat: item.latitude!,
       lon: item.longitude!,
     );
-    
+
+    if (!context.mounted) return;
     await showDialog<void>(
       context: context,
       builder: (BuildContext context) => Dialog(
@@ -533,17 +540,21 @@ class _TripDetailsState extends State<_TripDetails> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       if (item.address != null) ...[
-                        Text('Address', style: Theme.of(context).textTheme.titleMedium),
+                        Text('Address',
+                            style: Theme.of(context).textTheme.titleMedium),
                         const SizedBox(height: 8),
                         Text(item.address!),
                         const SizedBox(height: 16),
                       ],
-                      Text('Coordinates', style: Theme.of(context).textTheme.titleMedium),
+                      Text('Coordinates',
+                          style: Theme.of(context).textTheme.titleMedium),
                       const SizedBox(height: 8),
-                      Text('Lat: ${item.latitude!.toStringAsFixed(4)}, Lon: ${item.longitude!.toStringAsFixed(4)}'),
+                      Text(
+                          'Lat: ${item.latitude!.toStringAsFixed(4)}, Lon: ${item.longitude!.toStringAsFixed(4)}'),
                       const SizedBox(height: 16),
                       if (weather != null) ...[
-                        Text('Weather Forecast', style: Theme.of(context).textTheme.titleMedium),
+                        Text('Weather Forecast',
+                            style: Theme.of(context).textTheme.titleMedium),
                         const SizedBox(height: 8),
                         _buildWeatherCard(context, weather),
                       ],
@@ -559,17 +570,23 @@ class _TripDetailsState extends State<_TripDetails> {
   }
 
   Widget _buildWeatherCard(BuildContext context, Map<String, dynamic> weather) {
-    final Map<String, dynamic>? daily = weather['daily'] as Map<String, dynamic>?;
+    final Map<String, dynamic>? daily =
+        weather['daily'] as Map<String, dynamic>?;
     if (daily == null) return const SizedBox.shrink();
-    
+
     final List<dynamic>? dates = daily['time'] as List<dynamic>?;
-    final List<dynamic>? maxTemps = daily['temperature_2m_max'] as List<dynamic>?;
-    final List<dynamic>? minTemps = daily['temperature_2m_min'] as List<dynamic>?;
-    
-    if (dates == null || maxTemps == null || minTemps == null || dates.isEmpty) {
+    final List<dynamic>? maxTemps =
+        daily['temperature_2m_max'] as List<dynamic>?;
+    final List<dynamic>? minTemps =
+        daily['temperature_2m_min'] as List<dynamic>?;
+
+    if (dates == null ||
+        maxTemps == null ||
+        minTemps == null ||
+        dates.isEmpty) {
       return const Text('No weather data available');
     }
-    
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -625,18 +642,22 @@ class _TripDetailsState extends State<_TripDetails> {
             onPressed: () async {
               final String stopId = stopController.text.trim();
               if (stopId.isEmpty) return;
-              
-              final String? apiKey = const String.fromEnvironment('NAVITIA_API_KEY', defaultValue: '');
-              if (apiKey == null || apiKey.isEmpty) {
+
+              const String apiKey =
+                  String.fromEnvironment('NAVITIA_API_KEY', defaultValue: '');
+              if (apiKey.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Navitia API key required. Set NAVITIA_API_KEY')),
+                  const SnackBar(
+                      content: Text(
+                          'Navitia API key required. Set NAVITIA_API_KEY')),
                 );
                 return;
               }
-              
+
               final NavitiaService service = NavitiaService(apiKey: apiKey);
-              final Map<String, dynamic>? departures = await service.getDepartures(stopId);
-              
+              final Map<String, dynamic>? departures =
+                  await service.getDepartures(stopId);
+
               if (context.mounted) {
                 Navigator.of(context).pop();
                 _showBusResults(context, departures);
@@ -656,7 +677,7 @@ class _TripDetailsState extends State<_TripDetails> {
       );
       return;
     }
-    
+
     showDialog<void>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -684,9 +705,10 @@ class _TripDetailsState extends State<_TripDetails> {
     final TextEditingController originController = TextEditingController();
     final TextEditingController destController = TextEditingController();
     final TextEditingController dateController = TextEditingController(
-      text: DateTime.now().add(const Duration(days: 7)).toString().split(' ')[0],
+      text:
+          DateTime.now().add(const Duration(days: 7)).toString().split(' ')[0],
     );
-    
+
     await showDialog<void>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -735,26 +757,32 @@ class _TripDetailsState extends State<_TripDetails> {
               final String origin = originController.text.trim().toUpperCase();
               final String dest = destController.text.trim().toUpperCase();
               final String date = dateController.text.trim();
-              
+
               if (origin.isEmpty || dest.isEmpty || date.isEmpty) return;
-              
-              final String? clientId = const String.fromEnvironment('AMADEUS_CLIENT_ID', defaultValue: '');
-              final String? clientSecret = const String.fromEnvironment('AMADEUS_CLIENT_SECRET', defaultValue: '');
-              
-              if (clientId == null || clientId.isEmpty || clientSecret == null || clientSecret.isEmpty) {
+
+              const String clientId =
+                  String.fromEnvironment('AMADEUS_CLIENT_ID', defaultValue: '');
+              const String clientSecret = String.fromEnvironment(
+                  'AMADEUS_CLIENT_SECRET',
+                  defaultValue: '');
+
+              if (clientId.isEmpty || clientSecret.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Amadeus API keys required. Set AMADEUS_CLIENT_ID and AMADEUS_CLIENT_SECRET')),
+                  const SnackBar(
+                      content: Text(
+                          'Amadeus API keys required. Set AMADEUS_CLIENT_ID and AMADEUS_CLIENT_SECRET')),
                 );
                 return;
               }
-              
-              final AmadeusService service = AmadeusService(clientId: clientId, clientSecret: clientSecret);
+
+              final AmadeusService service = AmadeusService(
+                  clientId: clientId, clientSecret: clientSecret);
               final Map<String, dynamic>? flights = await service.searchFlights(
                 origin: origin,
                 destination: dest,
                 departureDate: date,
               );
-              
+
               if (context.mounted) {
                 Navigator.of(context).pop();
                 _showFlightResults(context, flights);
@@ -774,7 +802,7 @@ class _TripDetailsState extends State<_TripDetails> {
       );
       return;
     }
-    
+
     showDialog<void>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -801,22 +829,24 @@ class _TripDetailsState extends State<_TripDetails> {
   Future<void> _showWeatherForTrip(BuildContext context) async {
     if (_trip.itinerary.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Add locations to your trip to see weather')),
+        const SnackBar(
+            content: Text('Add locations to your trip to see weather')),
       );
       return;
     }
-    
+
     final List<ItineraryItem> locationsWithCoords = _trip.itinerary
-        .where((ItineraryItem item) => item.latitude != null && item.longitude != null)
+        .where((ItineraryItem item) =>
+            item.latitude != null && item.longitude != null)
         .toList();
-    
+
     if (locationsWithCoords.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('No locations with coordinates found')),
       );
       return;
     }
-    
+
     showDialog<void>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -826,21 +856,22 @@ class _TripDetailsState extends State<_TripDetails> {
           height: MediaQuery.of(context).size.height * 0.6,
           child: FutureBuilder<Map<String, Map<String, dynamic>?>>(
             future: _loadWeatherForLocations(locationsWithCoords),
-            builder: (BuildContext context, AsyncSnapshot<Map<String, Map<String, dynamic>?>> snapshot) {
+            builder: (BuildContext context,
+                AsyncSnapshot<Map<String, Map<String, dynamic>?>> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               }
-              
+
               if (!snapshot.hasData) {
                 return const Center(child: Text('Failed to load weather'));
               }
-              
+
               return ListView.builder(
                 itemCount: locationsWithCoords.length,
                 itemBuilder: (BuildContext context, int index) {
                   final ItineraryItem item = locationsWithCoords[index];
                   final Map<String, dynamic>? weather = snapshot.data![item.id];
-                  
+
                   return Card(
                     margin: const EdgeInsets.only(bottom: 8),
                     child: ListTile(
@@ -865,10 +896,12 @@ class _TripDetailsState extends State<_TripDetails> {
     );
   }
 
-  Future<Map<String, Map<String, dynamic>?>> _loadWeatherForLocations(List<ItineraryItem> locations) async {
+  Future<Map<String, Map<String, dynamic>?>> _loadWeatherForLocations(
+      List<ItineraryItem> locations) async {
     final OpenMeteoService service = OpenMeteoService();
-    final Map<String, Map<String, dynamic>?> results = <String, Map<String, dynamic>?>{};
-    
+    final Map<String, Map<String, dynamic>?> results =
+        <String, Map<String, dynamic>?>{};
+
     for (final ItineraryItem item in locations) {
       if (item.latitude != null && item.longitude != null) {
         final Map<String, dynamic>? weather = await service.getDailyForecast(
@@ -878,25 +911,28 @@ class _TripDetailsState extends State<_TripDetails> {
         results[item.id] = weather;
       }
     }
-    
+
     return results;
   }
 
   Widget _buildWeatherSummary(Map<String, dynamic> weather) {
-    final Map<String, dynamic>? daily = weather['daily'] as Map<String, dynamic>?;
+    final Map<String, dynamic>? daily =
+        weather['daily'] as Map<String, dynamic>?;
     if (daily == null) return const Text('No data');
-    
-    final List<dynamic>? maxTemps = daily['temperature_2m_max'] as List<dynamic>?;
+
+    final List<dynamic>? maxTemps =
+        daily['temperature_2m_max'] as List<dynamic>?;
     if (maxTemps == null || maxTemps.isEmpty) return const Text('No data');
-    
+
     return Text('Today: ${maxTemps[0]}°C');
   }
 
   Future<void> _removeItem(ItineraryItem item) async {
     setState(() {
       _trip = _trip.copyWith(
-        itinerary:
-            _trip.itinerary.where((ItineraryItem e) => e.id != item.id).toList(),
+        itinerary: _trip.itinerary
+            .where((ItineraryItem e) => e.id != item.id)
+            .toList(),
       );
     });
     await widget.onSave(_trip);
@@ -907,6 +943,7 @@ class _TripDetailsState extends State<_TripDetails> {
     );
   }
 }
+
 class _EmptyState extends StatelessWidget {
   const _EmptyState({required this.color});
 

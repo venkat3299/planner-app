@@ -10,11 +10,11 @@ class GeocodingService {
   /// Returns list of places with coordinates
   Future<List<LocationResult>> searchLocation(String query) async {
     if (query.trim().isEmpty) return <LocationResult>[];
-    
+
     final Uri url = Uri.parse(
       'https://nominatim.openstreetmap.org/search?q=${Uri.encodeComponent(query)}&format=json&limit=10&addressdetails=1',
     );
-    
+
     try {
       final http.Response res = await http.get(
         url,
@@ -22,7 +22,7 @@ class GeocodingService {
           'User-Agent': 'TripPlannerApp/1.0', // Required by Nominatim
         },
       );
-      
+
       if (res.statusCode == 200) {
         final List<dynamic> results = jsonDecode(res.body) as List<dynamic>;
         return results.map((dynamic e) {
@@ -47,7 +47,7 @@ class GeocodingService {
     final Uri url = Uri.parse(
       'https://nominatim.openstreetmap.org/reverse?lat=$lat&lon=$lon&format=json',
     );
-    
+
     try {
       final http.Response res = await http.get(
         url,
@@ -55,9 +55,10 @@ class GeocodingService {
           'User-Agent': 'TripPlannerApp/1.0',
         },
       );
-      
+
       if (res.statusCode == 200) {
-        final Map<String, dynamic> result = jsonDecode(res.body) as Map<String, dynamic>;
+        final Map<String, dynamic> result =
+            jsonDecode(res.body) as Map<String, dynamic>;
         return result['display_name'] as String?;
       }
     } catch (e) {
@@ -92,4 +93,3 @@ class LocationResult {
     return name.split(',').first;
   }
 }
-
